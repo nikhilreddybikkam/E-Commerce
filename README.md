@@ -195,15 +195,15 @@ For clustering metrics, a higher Silhouette score and Calinski-Harabasz index ar
 ## Repository Structure
 
 ```text
-.
-â”œâ”€â”€ README.md
-â”œâ”€â”€ Classification.ipynb
-â”œâ”€â”€ 23CSE301_Regression(2).ipynb
-â”œâ”€â”€ 23CSE301_Clustering (1).ipynb
-â””â”€â”€ datasets/
-    â”œâ”€â”€ online_shoppers_intention.csv
-    â”œâ”€â”€ ecommerce_user_segmentation.csv
-    â””â”€â”€ store.csv
+
+├── README.md
+├── Classification.ipynb
+├── 23CSE301_Regression(2).ipynb
+├── 23CSE301_Clustering (1).ipynb
+└── datasets/
+    ├── online_shoppers_intention.csv
+    ├── ecommerce_user_segmentation.csv
+    └── store.csv
 ```
 
 This is a suggested layout based on the notebook filenames and expected CSV filenames. The clustering notebook currently reads `store.csv` from its working directory. Update the notebook paths if you keep data inside `datasets/`. Add CSV files to the public repository only when their sources and licenses permit redistribution.
