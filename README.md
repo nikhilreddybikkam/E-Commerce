@@ -286,7 +286,7 @@ Open the required notebook and run the cells from top to bottom. Confirm that th
 
 | No. | Team Member | Section | Registration Number |
 |---:|---|---|---|
-| 1 | Bikkam Nikhi Reddy | CSE-D | `CB.SC.U4CSE24309` |
+| 1 | Bikkam Nikhil Reddy | CSE-D | `CB.SC.U4CSE24309` |
 | 2 | Kattumuri Santosh | CSE-D | `CB.SC.U4CSE24326` |
 | 3 | Shaik Moyeen | CSE-D | `CB.SC.U4CSE24347` |
 
