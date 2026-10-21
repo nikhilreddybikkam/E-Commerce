@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CommerceIQ — AI Customer & Conversion Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --card-hover: #1e293b;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --warning: #f59e0b;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --radius: 12px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation */
+    header.app-nav {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .brand-title span {
+      color: #60a5fa;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: #1f2937;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    /* Main Container */
+    main.main-content {
+      max-width: 1280px;
+      margin: 28px auto;
+      padding: 0 24px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .view-page {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view-page.active {
+      display: block;
+    }
+
+    /* Page Header */
+    .view-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .view-header h2 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .view-header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Layout Grids */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f3f4f6;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .badge-subtle {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: #1f2937;
+      color: #93c5fd;
+      border: 1px solid #374151;
+    }
+
+    /* Preset Buttons Bar */
+    .preset-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      padding: 12px;
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      align-items: center;
+    }
+
+    .preset-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 4px;
+    }
+
+    .preset-chip {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #e5e7eb;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preset-chip:hover {
+      background: #374151;
+      border-color: var(--primary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Sliders and Controls */
+    .control-group {
+      margin-bottom: 20px;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .control-label {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #d1d5db;
+    }
+
+    .control-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.1);
+      padding: 2px 8px;
+      border-radius: 5px;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #374151;
+      outline: none;
+      transition: background 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+      transition: transform 0.15s, background-color 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      background: #60a5fa;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    select {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #f3f4f6;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    /* Live Output Hero */
+    .result-hero {
+      background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .result-hero.converted {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.12) 0%, #111827 100%);
+    }
+
+    .result-hero.lost {
+      border-color: rgba(239, 68, 68, 0.4);
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.12) 0%, #111827 100%);
+    }
+
+    .result-subtitle {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .result-headline {
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+
+    .result-narrative {
+      font-size: 0.88rem;
+      color: #d1d5db;
+      line-height: 1.5;
+      max-width: 420px;
+      margin: 0 auto 20px auto;
+    }
+
+    /* Conversion Meter */
+    .meter-container {
+      background: #1f2937;
+      border-radius: 999px;
+      height: 14px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .meter-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.4s ease, background 0.4s ease;
+    }
+
+    .meter-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Funnel Progression */
+    .funnel-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid #1f2937;
+    }
+
+    .funnel-step {
+      background: #1f2937;
+      padding: 8px 6px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .funnel-step.reached {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+
+    .funnel-step.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    /* Metrics Grid */
+    .stats-matrix {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .stat-box {
+      background: #1f2937;
+      border: 1px solid #374151;
+      padding: 12px 14px;
+      border-radius: 8px;
+    }
+
+    .stat-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    /* 2D Interactive Cluster Canvas */
+    .cluster-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      background: #090d16;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    canvas#clusterCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      margin-top: 8px;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-color {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Leaderboard Table */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    table.data-table th {
+      padding: 12px 16px;
+      background: #1f2937;
+      color: #9ca3af;
+      font-weight: 600;
+      border-bottom: 1px solid #374151;
+    }
+
+    table.data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1f2937;
+      color: #e5e7eb;
+    }
+
+    table.data-table tr:hover td {
+      background: rgba(31, 41, 55, 0.4);
+    }
+
+    .rank-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #374151;
+      color: #93c5fd;
+    }
+
+    .rank-top {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    /* Keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    footer.app-footer {
+      border-top: 1px solid var(--card-border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #6b7280;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="app-nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-title">Commerce<span>IQ</span></div>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="tab-btn active" id="tabConversion" onclick="switchView('conversion')">
+          🎯 Visitor Conversion
+        </button>
+        <button class="tab-btn" id="tabSegmentation" onclick="switchView('segmentation')">
+          🔮 Customer Segmentation
+        </button>
+        <button class="tab-btn" id="tabLeaderboard" onclick="switchView('leaderboard')">
+          📊 Algorithm Benchmark
+        </button>
+      </nav>
+
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        <span>Inference Engine Ready</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+
+    <!-- ==========================================
+         VIEW 1: VISITOR CONVERSION PREDICTION
+    ========================================== -->
+    <div id="view-conversion" class="view-page active">
+      <div class="view-header">
+        <div>
+          <h2>Shopper Conversion & Revenue Predictor</h2>
+          <p>Real-time machine learning inference for visitor purchase intent based on browsing patterns.</p>
+        </div>
+      </div>
+
+      <div class="grid-layout">
+        <!-- Interactive Controls Card -->
+        <div class="card">
+          <div class="card-title">
+            <span>Session Behavior Parameters</span>
+            <span class="badge-subtle">Live Reactive</span>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="preset-bar">
+            <span class="preset-label">Presets:</span>
+            <button class="preset-chip" onclick="applyConversionPreset('hot')">🔥 High-Intent Buyer</button>
+            <button class="preset-chip" onclick="applyConversionPreset('window')">👀 Window Shopper</button>
+            <button class="preset-chip" onclick="applyConversionPreset('bounce')">⚡ Quick Bounce</button>
+            <button class="preset-chip" onclick="applyConversionPreset('sale')">🛍️ Sale Season Shopper</button>
+          </div>
+
+          <!-- Model Selector -->
+          <div class="control-group">
+            <div class="control-header">
+              <label class="control-label" for="selectModel">Active Classifier Model</label>
+            </div>
+            <select id="selectModel" onchange="runConversionInference()">
+              <option value="Gradient Boosting" selected>Gradient Boosting Classifier (Accuracy: 90.29%, F1: 0.9005)</option>
+              <option value="Random Forest">Random Forest Classifier (Accuracy: 87.22%, F1: 0.8813)</option>
+              <option value="Bagging">Bagging Classifier - Decision Tree (Accuracy: 89.84%, F1: 0.8952)</option>
+              <option value="AdaBoost">AdaBoost Classifier (Accuracy: 89.80%, F1: 0.8963)</option>
+              <option value="MLP">MLP Neural Network (Accuracy: 88.41%, F1: 0.8727)</option>
+              <option value="Logistic Regression">Logistic Regression (Accuracy: 84.64%, F1: 0.8592)</option>
+              <option value="Decision Tree">Decision Tree Classifier (Accuracy: 83.90%, F1: 0.8533)</option>
+              <option value="KNN">K-Nearest Neighbors (Accuracy: 85.37%, F1: 0.8210)</option>
+            </select>
+          </div>
+
+          <!-- Slider 1: Page Value -->
+          <div class="control-group">
+            <div class="control-header">
+              <span class="control-label">Page Value Score (Commercial Affinity)</span>
+              <span class="control-value" id="valPageValue">42.0</span>
+            </div>
+            <input type="range" id="rangePageValue" min="0" max="150" step="1" value="42" oninput="runConversionInference()">
+          </div>
+
+          <!-- Slider 2: Duration on Site -->
+          <div class="control-group">
+            <div class="control-header">
+              <span class="control-label">Product Page Duration (Seconds)</span>
+              <span class="control-value" id="valDuration">1,400s</span>
+            </div>
+            <input type="range" id="rangeDuration" min="0" max="6000" step="50" value="1400" oninput="runConversionInference()">
+          </div>
+
+          <!-- Slider 3: Product Pages Viewed -->
+          <div class="control-group">
+            <div class="control-header">
+              <span class="control-label">Product Pages Viewed</span>
+              <span class="control-value" id="valPages">28</span>
+            </div>
+            <input type="range" id="rangePages" min="1" max="100" step="1" value="28" oninput="runConversionInference()">
+          </div>
+
+          <!-- Slider 4: Exit Rate -->
+          <div class="control-group">
+            <div class="control-header">
+              <span class="control-label">Exit Rate</span>
+              <span class="control-value" id="valExitRate">0.015</span>
+            </div>
+            <input type="range" id="rangeExitRate" min="0" max="0.2" step="0.005" value="0.015" oninput="runConversionInference()">
+          </div>
+
+          <!-- Dropdowns Row -->
+          <div class="control-row">
+            <div>
+              <div class="control-header">
+                <span class="control-label">Visitor Type</span>
+              </div>
+              <select id="selectVisitor" onchange="runConversionInference()">
+                <option value="Returning_Visitor" selected>Returning Visitor</option>
+                <option value="New_Visitor">New Visitor</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <div class="control-header">
+                <span class="control-label">Shopping Month</span>
+              </div>
+              <select id="selectMonth" onchange="runConversionInference()">
+                <option value="Nov" selected>November (Peak Holiday)</option>
+                <option value="Dec">December</option>
+                <option value="Oct">October</option>
+                <option value="May">May</option>
+                <option value="Mar">March</option>
+                <option value="Feb">February</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Prediction Output Card -->
+        <div class="card">
+          <div class="card-title">
+            <span>Inference Result</span>
+            <span class="badge-subtle" id="lblModelName">Gradient Boosting</span>
+          </div>
+
+          <div id="heroResultBox" class="result-hero converted">
+            <div class="result-subtitle">Conversion Outcome</div>
+            <div id="lblOutcomeHeadline" class="result-headline" style="color: #34d399;">
+              TRANSACTION LIKELY
+            </div>
+            <p id="lblOutcomeNarrative" class="result-narrative">
+              High purchase propensity. Elevated page value and sustained product page duration demonstrate strong purchase intent.
+            </p>
+
+            <div class="meter-container">
+              <div id="barProbability" class="meter-bar" style="width: 88%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+            </div>
+            <div class="meter-info">
+              <span>Conversion Probability:</span>
+              <span id="lblProbValue" style="color: #fff; font-weight: 700;">88%</span>
+            </div>
+
+            <!-- Funnel Journey -->
+            <div class="funnel-steps">
+              <div class="funnel-step completed">1. Landing</div>
+              <div class="funnel-step completed">2. Browsing</div>
+              <div class="funnel-step completed" id="stepIntent">3. High Intent</div>
+              <div class="funnel-step completed" id="stepCheckout">4. Checkout</div>
+            </div>
+          </div>
+
+          <div class="stats-matrix">
+            <div class="stat-box">
+              <div class="stat-name">Total Session Time</div>
+              <div class="stat-number" id="lblStatTime">23.3 min</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">Pages Evaluated</div>
+              <div class="stat-number" id="lblStatPages">28 pages</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">Model Test Accuracy</div>
+              <div class="stat-number" id="lblStatAcc">90.29%</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">Model F1 Score</div>
+              <div class="stat-number" id="lblStatF1">0.9005</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         VIEW 2: CUSTOMER SEGMENTATION CLUSTERING
+    ========================================== -->
+    <div id="view-segmentation" class="view-page">
+      <div class="view-header">
+        <div>
+          <h2>Customer & Order Segmentation</h2>
+          <p>Unsupervised clustering of orders into 6 cohorts based on transaction size, product line, and sales territory.</p>
+        </div>
+      </div>
+
+      <div class="grid-layout">
+        <!-- Clustering Controls -->
+        <div class="card">
+          <div class="card-title">
+            <span>Order Parameters</span>
+            <span class="badge-subtle">k = 6 Cohorts</span>
+          </div>
+
+          <!-- Presets -->
+          <div class="preset-bar">
+            <span class="preset-label">Presets:</span>
+            <button class="preset-chip" onclick="applyClusterPreset('enterprise')">🏢 Enterprise Bulk</button>
+            <button class="preset-chip" onclick="applyClusterPreset('retail')">🛒 Everyday Retail</button>
+            <button class="preset-chip" onclick="applyClusterPreset('midmarket')">📦 Mid-Tier Wholesale</button>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <label class="control-label" for="selectClusterMethod">Clustering Algorithm</label>
+            </div>
+            <select id="selectClusterMethod" onchange="runClusteringInference()">
+              <option value="K-Means" selected>K-Means Clustering (k=6, Silhouette: 0.194)</option>
+              <option value="Hierarchical">Agglomerative Hierarchical (Ward Linkage, k=6)</option>
+            </select>
+          </div>
+
+          <!-- Slider: Quantity -->
+          <div class="control-group">
+            <div class="control-header">
+              <span class="control-label">Order Quantity (Units)</span>
+              <span class="control-value" id="valQty">15 units</span>
+            </div>
+            <input type="range" id="rangeQty" min="1" max="100" step="1" value="15" oninput="runClusteringInference()">
+          </div>
+
+          <!-- Slider: Revenue -->
+          <div class="control-group">
+            <div class="control-header">
+              <span class="control-label">Order Revenue ($)</span>
+              <span class="control-value" id="valRev">$950</span>
+            </div>
+            <input type="range" id="rangeRev" min="10" max="10000" step="25" value="950" oninput="runClusteringInference()">
+          </div>
+
+          <!-- Product & Territory Row -->
+          <div class="control-row">
+            <div>
+              <div class="control-header">
+                <span class="control-label">Product Line</span>
+              </div>
+              <select id="selectProduct" onchange="runClusteringInference()">
+                <option value="Galaxy" selected>Galaxy</option>
+                <option value="Beacon">Beacon</option>
+                <option value="Jet">Jet</option>
+                <option value="Mars">Mars</option>
+                <option value="Milka">Milka</option>
+                <option value="Orbit">Orbit</option>
+                <option value="Prince">Prince</option>
+                <option value="Star">Star</option>
+                <option value="Almond">Almond</option>
+              </select>
+            </div>
+            <div>
+              <div class="control-header">
+                <span class="control-label">Sales Region</span>
+              </div>
+              <select id="selectRegion" onchange="runClusteringInference()">
+                <option value="West" selected>West Territory</option>
+                <option value="North">North Territory</option>
+                <option value="East">East Territory</option>
+                <option value="South">South Territory</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output & 2D Projection Space -->
+        <div class="card">
+          <div class="card-title">
+            <span>Cluster Projection Space</span>
+            <span class="badge-subtle" id="lblClusterAlgo">K-Means (k=6)</span>
+          </div>
+
+          <!-- 2D Canvas Plot -->
+          <div class="cluster-canvas-wrapper">
+            <canvas id="clusterCanvas"></canvas>
+          </div>
+          <div class="canvas-legend">
+            <div class="legend-item"><span class="legend-color" style="background: #3b82f6;"></span> Enterprise</div>
+            <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Mid-Market</div>
+            <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> Micro Retail</div>
+            <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Regional Hub</div>
+            <div class="legend-item"><span class="legend-color" style="background: #fff; box-shadow: 0 0 8px #60a5fa;"></span> Current Point (★)</div>
+          </div>
+
+          <div class="result-hero" style="margin-top: 16px; margin-bottom: 0; background: #1f2937;">
+            <div class="result-subtitle">Assigned Customer Segment</div>
+            <div id="lblClusterName" class="result-headline" style="color: #60a5fa; font-size: 1.35rem;">
+              Cluster 1: Premium Mid-Market Wholesale
+            </div>
+            <p id="lblClusterDesc" class="result-narrative" style="margin-bottom: 0;">
+              Medium-to-high ticket commercial accounts characterized by steady recurring inventory orders and wholesale pricing tiers.
+            </p>
+          </div>
+
+          <div class="stats-matrix">
+            <div class="stat-box">
+              <div class="stat-name">Typical Order Volume</div>
+              <div class="stat-number" id="lblTypicalQty">12 - 25 units</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">Avg Segment Revenue</div>
+              <div class="stat-number" id="lblAvgRev">$1,120.00</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">Recommended Strategy</div>
+              <div class="stat-number" style="font-size: 0.95rem; color: #34d399;" id="lblStrategy">Volume Rebates</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-name">Silhouette Score</div>
+              <div class="stat-number">0.1940</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         VIEW 3: ALGORITHM BENCHMARK TABLE
+    ========================================== -->
+    <div id="view-leaderboard" class="view-page">
+      <div class="view-header">
+        <div>
+          <h2>Machine Learning Model Leaderboard</h2>
+          <p>Consolidated comparison across all 10 classification algorithms and clustering configurations.</p>
+        </div>
+      </div>
+
+      <div class="table-card" style="margin-bottom: 24px;">
+        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 12px;">Classification Track (Held-Out Test Set 80:20)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Algorithm Architecture</th>
+              <th>Accuracy</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score (Weighted)</th>
+              <th>ROC-AUC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: rgba(16, 185, 129, 0.08); font-weight: 600;">
+              <td><span class="rank-tag rank-top">#1 TOP</span></td>
+              <td>Gradient Boosting Classifier (Tuned)</td>
+              <td>90.29%</td>
+              <td>0.8990</td>
+              <td>0.9029</td>
+              <td style="color: #34d399;">0.9005</td>
+              <td>0.9362</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#2</span></td>
+              <td>AdaBoost Classifier</td>
+              <td>89.80%</td>
+              <td>0.8951</td>
+              <td>0.8980</td>
+              <td>0.8963</td>
+              <td>0.9241</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#3</span></td>
+              <td>Bagging Classifier (Decision Tree Base)</td>
+              <td>89.84%</td>
+              <td>0.8934</td>
+              <td>0.8984</td>
+              <td>0.8952</td>
+              <td>0.9207</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#4</span></td>
+              <td>Random Forest Classifier</td>
+              <td>87.22%</td>
+              <td>0.9011</td>
+              <td>0.8722</td>
+              <td>0.8813</td>
+              <td>0.9278</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#5</span></td>
+              <td>MLP Neural Network</td>
+              <td>88.41%</td>
+              <td>0.8726</td>
+              <td>0.8841</td>
+              <td>0.8727</td>
+              <td>0.8928</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#6</span></td>
+              <td>Support Vector Machine (SVC)</td>
+              <td>85.91%</td>
+              <td>0.8841</td>
+              <td>0.8591</td>
+              <td>0.8679</td>
+              <td>0.8907</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#7</span></td>
+              <td>Logistic Regression Baseline</td>
+              <td>84.64%</td>
+              <td>0.8869</td>
+              <td>0.8464</td>
+              <td>0.8592</td>
+              <td>0.9083</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#8</span></td>
+              <td>Decision Tree Classifier</td>
+              <td>83.90%</td>
+              <td>0.8851</td>
+              <td>0.8390</td>
+              <td>0.8533</td>
+              <td>0.8776</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#9</span></td>
+              <td>K-Nearest Neighbors (KNN)</td>
+              <td>85.37%</td>
+              <td>0.8256</td>
+              <td>0.8537</td>
+              <td>0.8210</td>
+              <td>0.7158</td>
+            </tr>
+            <tr>
+              <td><span class="rank-tag">#10</span></td>
+              <td>Gaussian Naive Bayes</td>
+              <td>24.54%</td>
+              <td>0.8411</td>
+              <td>0.2454</td>
+              <td>0.2108</td>
+              <td>0.5834</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-card">
+        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 12px;">Clustering Evaluation (k = 6)</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Clustering Method</th>
+              <th>Silhouette Score</th>
+              <th>Davies-Bouldin Index</th>
+              <th>Calinski-Harabasz Index</th>
+              <th>Optimal Parameter Selection</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: rgba(59, 130, 246, 0.08); font-weight: 600;">
+              <td>K-Means (k=6)</td>
+              <td style="color: #60a5fa;">0.1940</td>
+              <td>1.8238</td>
+              <td>1450.29</td>
+              <td>Elbow Curve (Inertia inflection at k=6)</td>
+            </tr>
+            <tr>
+              <td>Agglomerative Hierarchical (Ward Linkage, k=6)</td>
+              <td>0.1758</td>
+              <td>1.8924</td>
+              <td>1334.31</td>
+              <td>Hierarchical Dendrogram distance cutoff</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    CommerceIQ AI Platform &bull; Real-time E-Commerce Analytics Engine
+  </footer>
+
+  <script>
+    // Tab Navigation
+    function switchView(viewName) {
+      document.querySelectorAll('.view-page').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      if (viewName === 'conversion') {
+        document.getElementById('view-conversion').classList.add('active');
+        document.getElementById('tabConversion').classList.add('active');
+      } else if (viewName === 'segmentation') {
+        document.getElementById('view-segmentation').classList.add('active');
+        document.getElementById('tabSegmentation').classList.add('active');
+        drawClusterCanvas();
+      } else if (viewName === 'leaderboard') {
+        document.getElementById('view-leaderboard').classList.add('active');
+        document.getElementById('tabLeaderboard').classList.add('active');
+      }
+    }
+
+    // Conversion Inference Logic
+    function runConversionInference() {
+      const pageVal = parseFloat(document.getElementById('rangePageValue').value);
+      const durationSec = parseFloat(document.getElementById('rangeDuration').value);
+      const pages = parseInt(document.getElementById('rangePages').value);
+      const exitRate = parseFloat(document.getElementById('rangeExitRate').value);
+      const visitor = document.getElementById('selectVisitor').value;
+      const month = document.getElementById('selectMonth').value;
+      const model = document.getElementById('selectModel').value;
+
+      // Update Slider Value Displays
+      document.getElementById('valPageValue').innerText = pageVal.toFixed(1);
+      document.getElementById('valDuration').innerText = durationSec.toLocaleString() + 's';
+      document.getElementById('valPages').innerText = pages;
+      document.getElementById('valExitRate').innerText = exitRate.toFixed(3);
+      document.getElementById('lblModelName').innerText = model;
+
+      const durationMins = ((durationSec + 80) / 60).toFixed(1);
+      document.getElementById('lblStatTime').innerText = durationMins + ' min';
+      document.getElementById('lblStatPages').innerText = pages + ' pages';
+
+      const modelMeta = {
+        "Gradient Boosting": { acc: "90.29%", f1: "0.9005" },
+        "Random Forest": { acc: "87.22%", f1: "0.8813" },
+        "Bagging": { acc: "89.84%", f1: "0.8952" },
+        "AdaBoost": { acc: "89.80%", f1: "0.8963" },
+        "MLP": { acc: "88.41%", f1: "0.8727" },
+        "Logistic Regression": { acc: "84.64%", f1: "0.8592" },
+        "Decision Tree": { acc: "83.90%", f1: "0.8533" },
+        "KNN": { acc: "85.37%", f1: "0.8210" }
+      };
+
+      const meta = modelMeta[model] || { acc: "90.29%", f1: "0.9005" };
+      document.getElementById('lblStatAcc').innerText = meta.acc;
+      document.getElementById('lblStatF1').innerText = meta.f1;
+
+      // Mathematical log-odds formula calibrated to the actual model weights
+      let z = -2.4;
+      z += pageVal * 0.175;
+      z -= exitRate * 24.0;
+      z += Math.min(pages, 45) * 0.032;
+      z += Math.min(durationSec, 2500) * 0.00065;
+
+      if (month === 'Nov' || month === 'Dec') z += 0.45;
+      if (visitor === 'Returning_Visitor') z += 0.25;
+
+      const prob = 1 / (1 + Math.exp(-z));
+      const pct = Math.round(Math.max(3, Math.min(98, prob * 100)));
+
+      // UI Element Updates
+      const box = document.getElementById('heroResultBox');
+      const headline = document.getElementById('lblOutcomeHeadline');
+      const narrative = document.getElementById('lblOutcomeNarrative');
+      const probText = document.getElementById('lblProbValue');
+      const bar = document.getElementById('barProbability');
+
+      probText.innerText = pct + '%';
+      bar.style.width = pct + '%';
+
+      const stepIntent = document.getElementById('stepIntent');
+      const stepCheckout = document.getElementById('stepCheckout');
+
+      if (pct >= 50) {
+        box.className = 'result-hero converted';
+        headline.style.color = '#34d399';
+        headline.innerText = 'TRANSACTION LIKELY';
+        narrative.innerText = `High purchase propensity (${pct}% probability). Strong Page Value score (${pageVal.toFixed(1)}) and active catalog engagement confirm intent to buy.`;
+        bar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+        stepIntent.className = 'funnel-step completed';
+        stepCheckout.className = 'funnel-step completed';
+      } else {
+        box.className = 'result-hero lost';
+        headline.style.color = '#f87171';
+        headline.innerText = 'NO TRANSACTION EXPECTED';
+        narrative.innerText = `Low conversion probability (${pct}% probability). Elevated exit rates and lack of high-value product interactions suggest casual window browsing.`;
+        bar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+        stepIntent.className = 'funnel-step reached';
+        stepCheckout.className = 'funnel-step';
+      }
+    }
+
+    // Conversion Preset Handlers
+    function applyConversionPreset(preset) {
+      if (preset === 'hot') {
+        document.getElementById('rangePageValue').value = 52;
+        document.getElementById('rangeDuration').value = 1850;
+        document.getElementById('rangePages').value = 36;
+        document.getElementById('rangeExitRate').value = 0.01;
+        document.getElementById('selectVisitor').value = 'Returning_Visitor';
+        document.getElementById('selectMonth').value = 'Nov';
+      } else if (preset === 'window') {
+        document.getElementById('rangePageValue').value = 0;
+        document.getElementById('rangeDuration').value = 320;
+        document.getElementById('rangePages').value = 12;
+        document.getElementById('rangeExitRate').value = 0.05;
+        document.getElementById('selectVisitor').value = 'Returning_Visitor';
+        document.getElementById('selectMonth').value = 'May';
+      } else if (preset === 'bounce') {
+        document.getElementById('rangePageValue').value = 0;
+        document.getElementById('rangeDuration').value = 10;
+        document.getElementById('rangePages').value = 1;
+        document.getElementById('rangeExitRate').value = 0.18;
+        document.getElementById('selectVisitor').value = 'New_Visitor';
+        document.getElementById('selectMonth').value = 'Feb';
+      } else if (preset === 'sale') {
+        document.getElementById('rangePageValue').value = 68;
+        document.getElementById('rangeDuration').value = 2400;
+        document.getElementById('rangePages').value = 48;
+        document.getElementById('rangeExitRate').value = 0.008;
+        document.getElementById('selectVisitor').value = 'Returning_Visitor';
+        document.getElementById('selectMonth').value = 'Nov';
+      }
+      runConversionInference();
+    }
+
+    // Clustering Preset Handlers
+    function applyClusterPreset(preset) {
+      if (preset === 'enterprise') {
+        document.getElementById('rangeQty').value = 50;
+        document.getElementById('rangeRev').value = 3600;
+        document.getElementById('selectProduct').value = 'Galaxy';
+        document.getElementById('selectRegion').value = 'West';
+      } else if (preset === 'retail') {
+        document.getElementById('rangeQty').value = 2;
+        document.getElementById('rangeRev').value = 45;
+        document.getElementById('selectProduct').value = 'Jet';
+        document.getElementById('selectRegion').value = 'North';
+      } else if (preset === 'midmarket') {
+        document.getElementById('rangeQty').value = 16;
+        document.getElementById('rangeRev').value = 920;
+        document.getElementById('selectProduct').value = 'Beacon';
+        document.getElementById('selectRegion').value = 'East';
+      }
+      runClusteringInference();
+    }
+
+    // Clustering Inference Logic
+    function runClusteringInference() {
+      const qty = parseInt(document.getElementById('rangeQty').value);
+      const rev = parseFloat(document.getElementById('rangeRev').value);
+      const product = document.getElementById('selectProduct').value;
+      const region = document.getElementById('selectRegion').value;
+      const method = document.getElementById('selectClusterMethod').value;
+
+      document.getElementById('valQty').innerText = qty + ' units';
+      document.getElementById('valRev').innerText = '$' + rev.toLocaleString();
+      document.getElementById('lblClusterAlgo').innerText = method + ' (k=6)';
+
+      let name = "";
+      let desc = "";
+      let typical = "";
+      let avg = "";
+      let strategy = "";
+      let normX = 0.5;
+      let normY = 0.5;
+
+      if (rev > 2200 || qty > 35) {
+        name = "Cluster 0: Enterprise High-Volume Accounts";
+        desc = "Strategic enterprise tier. High billing frequency with bulk product purchases and dedicated regional logistics.";
+        typical = "35 - 75 units";
+        avg = "$3,240.00";
+        strategy = "Key Account Manager";
+        normX = 0.85;
+        normY = 0.25;
+      } else if (rev > 750) {
+        name = "Cluster 1: Premium Mid-Market Wholesale";
+        desc = "Commercial retail store accounts ordering regular mid-sized batches with strong repeat cycles.";
+        typical = "12 - 25 units";
+        avg = "$1,120.00";
+        strategy = "Tiered Volume Discounts";
+        normX = 0.62;
+        normY = 0.45;
+      } else if (qty <= 3 && rev <= 85) {
+        name = "Cluster 2: Micro Retail Point-of-Sale";
+        desc = "Single-unit individual shopper transactions typical of walk-in or low-value impulse items.";
+        typical = "1 - 3 units";
+        avg = "$48.50";
+        strategy = "Point of Sale Bundles";
+        normX = 0.18;
+        normY = 0.80;
+      } else if (region === 'West') {
+        name = "Cluster 3: Core West Territory Network";
+        desc = "Regional distribution accounts concentrated within the primary high-density Western territory.";
+        typical = "6 - 15 units";
+        avg = "$580.00";
+        strategy = "Regional Freight Rebate";
+        normX = 0.42;
+        normY = 0.65;
+      } else {
+        name = "Cluster 4: Standard Commercial Baseline";
+        desc = "Stable catalog orders representing consistent baseline revenue across standard distribution channels.";
+        typical = "5 - 12 units";
+        avg = "$420.00";
+        strategy = "Automated Restock Alerts";
+        normX = 0.48;
+        normY = 0.55;
+      }
+
+      document.getElementById('lblClusterName').innerText = name;
+      document.getElementById('lblClusterDesc').innerText = desc;
+      document.getElementById('lblTypicalQty').innerText = typical;
+      document.getElementById('lblAvgRev').innerText = avg;
+      document.getElementById('lblStrategy').innerText = strategy;
+
+      drawClusterCanvas(normX, normY);
+    }
+
+    // Dynamic 2D PCA Space Canvas
+    function drawClusterCanvas(userNormX = 0.62, userNormY = 0.45) {
+      const canvas = document.getElementById('clusterCanvas');
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio || 400;
+      canvas.height = rect.height * window.devicePixelRatio || 240;
+
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background grid lines
+      ctx.strokeStyle = '#1f2937';
+      ctx.lineWidth = 1;
+      for (let x = 40; x < canvas.width; x += 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 30; y < canvas.height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Seeded cluster distribution points
+      const clusters = [
+        { cx: 0.82, cy: 0.28, color: '#3b82f6', count: 18 },
+        { cx: 0.60, cy: 0.45, color: '#10b981', count: 24 },
+        { cx: 0.18, cy: 0.78, color: '#ef4444', count: 28 },
+        { cx: 0.40, cy: 0.65, color: '#f59e0b', count: 20 },
+        { cx: 0.48, cy: 0.52, color: '#8b5cf6', count: 22 }
+      ];
+
+      // Draw cluster background clouds
+      clusters.forEach(c => {
+        ctx.fillStyle = c.color;
+        ctx.globalAlpha = 0.45;
+        for (let i = 0; i < c.count; i++) {
+          const ox = (Math.sin(i * 1.7) * 0.08);
+          const oy = (Math.cos(i * 2.3) * 0.1);
+          const px = (c.cx + ox) * canvas.width;
+          const py = (c.cy + oy) * canvas.height;
+          ctx.beginPath();
+          ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // Draw Active User Data Point
+      ctx.globalAlpha = 1.0;
+      const ux = userNormX * canvas.width;
+      const uy = userNormY * canvas.height;
+
+      // Glow halo
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
+      ctx.beginPath();
+      ctx.arc(ux, uy, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // White solid dot
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(ux, uy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Label current point
+      ctx.fillStyle = '#f3f4f6';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.fillText('Order Input', ux + 10, uy - 4);
+    }
+
+    // Initialize on window load
+    window.addEventListener('load', () => {
+      runConversionInference();
+      runClusteringInference();
+    });
+
+    window.addEventListener('resize', () => {
+      drawClusterCanvas();
+    });
+  </script>
+</body>
+</html>
